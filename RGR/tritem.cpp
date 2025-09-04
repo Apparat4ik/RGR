@@ -1,60 +1,79 @@
-#include <iostream>
-#include <string>
-#include <fstream>
-#include <vector>
+#include "header.h"
 
-using namespace std;
 
-// Шифрование/дешифрование файла
-void processFile(const string& inputFile, const string& outputFile, bool encrypt) {
-    ifstream inFile(inputFile, ios::binary);
-    ofstream outFile(outputFile, ios::binary);
+void process_file(const string& inputFile, const string& outputFile, bool encrypt) {
+    ifstream InFile(inputFile, ios::binary);
+    ofstream OutFile(outputFile, ios::binary);
     
-    if (!inFile.is_open() || !outFile.is_open()) {
-        cerr << "Ошибка открытия файлов!" << endl;
-        return;
+    if (!InFile.is_open() || !OutFile.is_open()) {
+        throw runtime_error("Ошибка открытия файлов!");
     }
     
-    vector<char> buffer((istreambuf_iterator<char>(inFile)),
-                       istreambuf_iterator<char>());
+    char ch;
+    int index = 0;
     
-    for (size_t i = 0; i < buffer.size(); i++) {
-        unsigned char c = buffer[i];
+    while (InFile.get(ch)){
         int result;
         
         if (encrypt) {
-            result = (static_cast<int>(c) + i) % 256;
+            result = (static_cast<int>(ch) + index) % 256;
         } else {
-            result = (static_cast<int>(c) - i) % 256;
+            result = (static_cast<int>(ch) - index) % 256;
             if (result < 0) result += 256;
         }
-        
-        outFile.put(static_cast<char>(result));
+        OutFile.put(static_cast<unsigned char>(result));
+        index++;
     }
+    
+    InFile.close();
+    OutFile.close();
     
     cout << "Файл " << (encrypt ? "зашифрован" : "расшифрован") << " успешно!" << endl;
 }
 
-int main() {
+
+void TritemiusCipher() {
     int choice;
-    
     cout << "Шифр Тритемия с mod 256" << endl;
     cout << "1 - Шифрование файла" << endl;
-    cout << "1 - Расшифрование файла" << endl;
+    cout << "2 - Расшифрование файла" << endl;
+    cout << "0 - Назад в меню" << endl;
     cout << "Выбор: ";
-    cin >> choice;
-    cin.ignore(); // Очистка буфера
+    string inputFile, outputFile;
+    bool run = true;
     
-      
-    if (choice == 1 || choice == 2) {
-        string inputFile, outputFile;
-        cout << "Входной файл: ";
-        getline(cin, inputFile);
-        cout << "Выходной файл: ";
-        getline(cin, outputFile);
-        
-        processFile(inputFile, outputFile, choice == 2);
+    try {
+        while (run) {
+            cout << ">>> ";
+            cin >> choice;
+
+            switch (choice) {
+                case 1:
+                    cout << "Введите входной файл: ";
+                    cin >> inputFile;
+                    cout << "Введите выходной файл: ";
+                    cin >> outputFile;
+                    process_file(inputFile, outputFile, true);
+                    break;
+                                
+                case 2:
+                    cout << "Введите входной файл: ";
+                    cin >> inputFile;
+                    cout << "Введите выходной файл: ";
+                    cin >> outputFile;
+                    process_file(inputFile, outputFile, false);
+                    break;
+                
+                case 0:
+                    run = false;
+                    break;
+                                
+                default:
+                    cerr << "Такой команды нет" << endl;
+                    break;
+            }
+        }
+    } catch (exception& ss){
+        cerr << ss.what() << endl;
     }
-    
-    return 0;
 }

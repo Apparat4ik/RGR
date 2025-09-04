@@ -1,90 +1,99 @@
-#include <iostream>
-#include <fstream>
-#include <string>
-#include <vector>
+#include "header.h"
+#include <random>
 
-using namespace std;
+random_device rd;
+mt19937 gen(rd());
 
-
-vector<unsigned char> xorEncryptDecrypt(const vector<unsigned char>& data, const string& key) {
-    vector<unsigned char> result;
-    result.reserve(data.size());
+void xor_encrypt_decrypt(const string& inputFile, const string& outputFile, const string& key) {
+    ifstream InFile(inputFile, ios::binary);
+    ofstream OutFile(outputFile, ios::binary);
     
-    for (size_t i = 0; i < data.size(); ++i) {
-        char encryptedChar = data[i] ^ key[i % key.size()];
-        result.push_back(encryptedChar);
+    if (!InFile.is_open() || !OutFile.is_open()) {
+        throw runtime_error("Ошибка открытия файлов!");
     }
     
-    return result;
+    char ch;
+    int index = 0;
+    
+    while (InFile.get(ch)){
+        char encCh = ch ^ key[index % key.size()];
+        index++;
+        OutFile.put(static_cast<unsigned char>(encCh));
+    }
+    InFile.close();
+    OutFile.close();
+}
+
+string key_generation(int range){
+    string key;
+    uniform_int_distribution<> dis(32, 126);
+    for (int i = 0; i < range; i++){
+        key += static_cast<char>(dis(gen));
+    }
+    return key;
 }
 
 
-vector<unsigned char> readFile(const string& filename) {
-    ifstream file(filename, ios::binary);
-    if (!file.is_open()) {
-        throw runtime_error("Ошибка: Не удалось открыть файл для чтения: " + filename);
-    }
+void XorCipher() {
+    cout << "XOR шифрование" << endl;
+    string inputFile, outputFile, key;
+    int choice, key_range;
+    bool run = true;
     
-
-    file.seekg(0, ios::end);
-    streamsize size = file.tellg();
-    file.seekg(0, ios::beg);
+    cout << "Выберите что вы хотите сделать" << endl;
+    cout << "1 - Шифрование файла" << endl;
+    cout << "2 - Расшифрование файла" << endl;
+    cout << "0 - Назад в меню" << endl;
+    cout << "Выбор: ";
     
-    vector<unsigned char> buffer(size);
-    if (!file.read(reinterpret_cast<char*>(buffer.data()), size)) {  // запись содержимого файла в buffer
-        throw runtime_error("Ошибка: Не удалось прочитать файл: " + filename);
-    }
-    
-    file.close();
-    return buffer;
-}
-
-
-void writeFile(const string& filename, const vector<unsigned char>& data) {
-    ofstream file(filename, ios::binary);
-    if (!file.is_open()) {
-        throw runtime_error("Ошибка: Не удалось открыть файл для записи: " + filename);
-    }
-    
-    if (!file.write(reinterpret_cast<const char*>(data.data()), data.size())) {
-        throw runtime_error("Ошибка: Не удалось записать в файл: " + filename);
-    }
-    
-    file.close();
-    cout << "Данные успешно записаны в файл: " << filename << endl;
-}
-
-int main() {
     try {
-        string inputFilename, key;
-  
-        cout << "Введите имя файла для шифрования: ";
-        cin >> inputFilename;
-        
-        cout << "Введите ключ для шифрования: ";
-        getline(cin, key);
-        
-        if (key.empty()) {
-            throw runtime_error("Ошибка: Ключ не может быть пустым");
+        while (run) {
+            cout << " >>> ";
+            cin >> choice;
+            switch (choice) {
+                case 1:
+                    cout << "Введите путь к файлу для шифрования: ";
+                    cin >> inputFile;
+                    cout << "Введите имя файла куда вы хотите вывести результат: ";
+                    cin >> outputFile;
+                    cout << "Введите длину вашего ключа: ";
+                    cin >> key_range;
+                    key = key_generation(key_range);
+                            
+                    cout << "Ваш ключ шифрования: " << key << endl;
+                            
+                    xor_encrypt_decrypt(inputFile, outputFile, key);
+                            
+                    cout << "Файл зашифрован" << endl;
+                    break;
+                            
+                case 2:
+                    cout << "Введите путь к файлу для расшифрования: ";
+                    cin >> inputFile;
+                    cout << "Введите имя файла куда вы хотите вывести результат: ";
+                    cin >> outputFile;
+                    cout << "Введите ключ для шифрования: ";
+                    getline(cin, key);
+                    getline(cin, key);
+                            
+                    if (key.empty()) {
+                        throw runtime_error("Ошибка: Ключ не может быть пустым");
+                    }
+
+                    xor_encrypt_decrypt(inputFile, outputFile, key);
+                    cout << "Файл расшифрован" << endl;
+                    break;
+                    
+                case 0:
+                    run = false;
+                    break;
+                            
+                default:
+                    cerr << "Такой команды нет" << endl;
+                    break;
+            }
         }
-        
-
-        cout << "Чтение файла..." << endl;
-        vector<unsigned char> originalData = readFile(inputFilename);
-        
-
-        cout << "Шифрование..." << endl;
-        vector<unsigned char> encryptedData = xorEncryptDecrypt(originalData, key);
-        
-      
-        cout << "Запись результата..." << endl;
-        writeFile("cypher.txt", encryptedData);
-        
-        cout << "Шифрование завершено успешно!" << endl;
-    } catch (const exception& e) {
-        cerr << e.what() << endl;
-        return 1;
+    } catch (const exception& ss) {
+        cerr << ss.what() << endl;
     }
-    
-    return 0;
 }

@@ -1,12 +1,6 @@
-#include <iostream>
-#include <string>
-#include <vector>
-#include <fstream>
+#include "header.h"
 #include <stdint.h>
-#include <filesystem>
 
-using namespace std;
-namespace fs = filesystem;
 
 string polybius_encrypt(const string& text) {
     vector<uint8_t> codes;
@@ -66,7 +60,7 @@ string polybius_decrypt(const string& ciphertext) {
 void read_file(const string& filename, string& content) {
     ifstream file(filename, ios::binary);
     if (!file.is_open()) {
-        throw runtime_error("Ошибка: Не удалось открыть файл '" + filename + "' для чтения");
+        throw runtime_error("Ошибка: Не удалось открыть файл для чтения");
     }
     
     file.seekg(0, ios::end);
@@ -81,73 +75,72 @@ void read_file(const string& filename, string& content) {
 }
 
 
-bool write_file(const string& filename, const string& content) {
+void write_file(const string& filename, const string& content) {
     
     ofstream file(filename, ios::binary);
     if (!file.is_open()) {
-        cerr << "Ошибка: Не удалось открыть файл '" << filename << "' для записи" << endl;
-        cerr << "Проверьте права доступа к директории" << endl;
-        return false;
+        throw runtime_error("Ошибка: Не удалось открыть файл для записи");
     }
     
     file.write(content.c_str(), content.size());
     
-    if (!file) {
-        cerr << "Ошибка: Не удалось записать данные в файл" << endl;
-        file.close();
-        return false;
-    }
-    
     file.close();
-    cout << "Записано " << content.size() << " байт в файл '" << filename << "'" << endl;
-    return true;
 }
 
 
-int main() {
-    cout << "Шифрование методом квадрата Полибия (работа с файлами)" << endl;
-    cout << "======================================================" << endl;
-    
+void PolibiusCipher() {
     int choice;
+    cout << "Шифрование через квадрат Полибия" << endl;
     cout << "Выберите режим работы:" << endl;
     cout << "1 - Шифрование файла" << endl;
     cout << "2 - Дешифрование файла" << endl;
+    cout << "0 - Назад в меню" << endl;
     cout << "Ваш выбор: ";
-    cin >> choice;
+    
     
     string input_file, output_file;
-    
-    cout << "Введите путь к входному файлу: ";
-    cin >> input_file;
-    cout << "Введите путь к выходному файлу: ";
-    cin >> output_file;
-    
     string processed_content;
     string file_content;
+    bool run = true;
+    
     try {
-        read_file(input_file, file_content);
-        switch (choice) {
-            case 1:
-                cout << "Шифрование..." << endl;
-                processed_content = polybius_encrypt(file_content);
-                cout << "Размер данных: " << file_content.size() << " -> " << processed_content.size() << " байт" << endl;
-                break;
+        while (run){
+            cout << ">>> ";
+            cin >> choice;
+            switch (choice) {
+                case 1:
+                    cout << "Введите путь к входному файлу: ";
+                    cin >> input_file;
+                    cout << "Введите путь к выходному файлу: ";
+                    cin >> output_file;
                     
-            case 2:
-                cout << "Дешифрование..." << endl;
-                processed_content = polybius_decrypt(file_content);
-                cout << "Размер данных: " << file_content.size() << " -> " << processed_content.size() << " байт" << endl;
+                    read_file(input_file, file_content);
+                    processed_content = polybius_encrypt(file_content);
+                    write_file(output_file, processed_content);
+                    cout << "Файл зашифрован" << endl;
+                    break;
                     
-            default:
-                cerr << "Ошибка: Неверный выбор режима" << endl;
-                break;
+                case 2:
+                    cout << "Введите путь к входному файлу: ";
+                    cin >> input_file;
+                    cout << "Введите путь к выходному файлу: ";
+                    cin >> output_file;
+                    
+                    read_file(input_file, file_content);
+                    processed_content = polybius_decrypt(file_content);
+                    write_file(output_file, processed_content);
+                    break;
+                    
+                case 0:
+                    run = false;
+                    break;
+                    
+                default:
+                    throw invalid_argument("Такой команды нет");
+                    break;
+            }
         }
-            
-        write_file(output_file, processed_content);
-        
-        cout << "Операция завершена успешно!" << endl;
     } catch (exception& ss) {
         cerr << ss.what() << endl;
     }
-    return 0;
 }
