@@ -6,7 +6,7 @@ void process_file(const string& inputFile, const string& outputFile, bool encryp
     ofstream OutFile(outputFile, ios::binary);
     
     if (!InFile.is_open() || !OutFile.is_open()) {
-        throw runtime_error("Ошибка открытия файлов!");
+        throw runtime_error("Ошибка открытия файлов!, Проверьте существует ли входной файл или выставите на него нужные разрешения");
     }
     
     char ch;

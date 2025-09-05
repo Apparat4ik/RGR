@@ -117,6 +117,8 @@ void PolibiusCipher() {
                     read_file(input_file, file_content);
                     processed_content = polybius_encrypt(file_content);
                     write_file(output_file, processed_content);
+                    processed_content.clear();
+                    file_content.clear();
                     cout << "Файл зашифрован" << endl;
                     break;
                     
@@ -129,6 +131,8 @@ void PolibiusCipher() {
                     read_file(input_file, file_content);
                     processed_content = polybius_decrypt(file_content);
                     write_file(output_file, processed_content);
+                    processed_content.clear();
+                    file_content.clear();
                     break;
                     
                 case 0:
@@ -136,7 +140,7 @@ void PolibiusCipher() {
                     break;
                     
                 default:
-                    throw invalid_argument("Такой команды нет");
+                    cerr << "Такой команды нет" << endl;
                     break;
             }
         }

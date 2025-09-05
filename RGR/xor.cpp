@@ -9,7 +9,7 @@ void xor_encrypt_decrypt(const string& inputFile, const string& outputFile, cons
     ofstream OutFile(outputFile, ios::binary);
     
     if (!InFile.is_open() || !OutFile.is_open()) {
-        throw runtime_error("Ошибка открытия файлов!");
+        throw runtime_error("Ошибка открытия файлов!, Проверьте существует ли входной файл или выставите на него нужные разрешения");
     }
     
     char ch;
@@ -25,11 +25,15 @@ void xor_encrypt_decrypt(const string& inputFile, const string& outputFile, cons
 }
 
 string key_generation(int range){
+    ofstream mk_file("master_key.txt", ios::binary);
+    
     string key;
     uniform_int_distribution<> dis(32, 126);
     for (int i = 0; i < range; i++){
         key += static_cast<char>(dis(gen));
     }
+    mk_file << key;
+    mk_file.close();
     return key;
 }
 
@@ -59,6 +63,7 @@ void XorCipher() {
                     cout << "Введите длину вашего ключа: ";
                     cin >> key_range;
                     key = key_generation(key_range);
+                    cout << "Ключ сгенерирован в файл master_key.txt" << endl;
                             
                     cout << "Ваш ключ шифрования: " << key << endl;
                             
