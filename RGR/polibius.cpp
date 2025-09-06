@@ -24,7 +24,7 @@ string polybius_encrypt(const string& text) {
     for (int i = 0; i < combined.size(); i += 2) {
         if (i + 1 < combined.size()) {
             int new_code = combined[i] * 16 + combined[i + 1];
-            result += static_cast<char>(new_code);
+            result += static_cast<unsigned char>(new_code);
         }
     }
     
@@ -51,7 +51,7 @@ string polybius_decrypt(const string& ciphertext) {
     string result;
     for (int i = 0; i < n; i++) {
         int original_code = rows[i] * 16 + cols[i];
-        result += static_cast<char>(original_code);
+        result += static_cast< unsigned char>(original_code);
     }
     
     return result;
@@ -75,7 +75,6 @@ void read_file(const string& filename, string& content) {
     file.read(&content[0], size);
     
     file.close();
-    cout << "Прочитано " << size << " байт из файла '" << filename << "'" << endl;
 }
 
 
@@ -137,6 +136,7 @@ void PolibiusCipher() {
                     write_file(output_file, processed_content);
                     processed_content.clear();
                     file_content.clear();
+                    cout << "Файл расшифрован" << endl;
                     break;
                     
                 case 0:

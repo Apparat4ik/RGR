@@ -24,6 +24,7 @@ void xor_encrypt_decrypt(const string& inputFile, const string& outputFile, cons
         index++;
         OutFile.put(static_cast<unsigned char>(encCh));
     }
+
     InFile.close();
     OutFile.close();
 }
@@ -34,7 +35,7 @@ string key_generation(int range){
     string key;
     uniform_int_distribution<> dis(32, 126);
     for (int i = 0; i < range; i++){
-        key += static_cast<char>(dis(gen));
+        key += static_cast<unsigned char>(dis(gen));
     }
     mk_file << key;
     mk_file.close();
@@ -66,6 +67,11 @@ void XorCipher() {
                     cin >> outputFile;
                     cout << "Введите длину вашего ключа: ";
                     cin >> key_range;
+                    
+                    if (key_range <= 0 || cin.fail()){
+                        cerr << "Длина ключа должна быть положительным числом" << endl;
+                    }
+                    
                     key = key_generation(key_range);
                     cout << "Ключ сгенерирован в файл master_key.txt" << endl;
                             
