@@ -14,20 +14,24 @@ void process_file(const string& inputFile, const string& outputFile, bool encryp
     
     char ch;
     int index = 0;
-    
+    vector<unsigned int> test;
     while (InFile.get(ch)){
         int result;
         
         if (encrypt) {
             result = (static_cast<unsigned int>(ch) + index) % 256;
+            test.push_back(result);
         } else {
-            result = (static_cast<unsigned int>(ch) - index) % 256;
+            result = (static_cast<int>(ch) - index) % 256;
             if (result < 0) result += 256;
         }
         OutFile.put(static_cast<unsigned char>(result));
         index++;
     }
-    
+    for (unsigned int h : test){
+        cout << h << ' ';
+    }
+    cout << endl;
     InFile.close();
     OutFile.close();
     
