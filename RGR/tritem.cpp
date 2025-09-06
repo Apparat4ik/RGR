@@ -8,6 +8,9 @@ void process_file(const string& inputFile, const string& outputFile, bool encryp
     if (!InFile.is_open() || !OutFile.is_open()) {
         throw runtime_error("Ошибка открытия файлов!, Проверьте существует ли входной файл или выставите на него нужные разрешения");
     }
+    if (InFile.peek() == InFile.eof()){
+        throw runtime_error("Ошибка! Файл пуст");
+    }
     
     char ch;
     int index = 0;

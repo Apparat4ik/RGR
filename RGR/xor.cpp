@@ -12,6 +12,10 @@ void xor_encrypt_decrypt(const string& inputFile, const string& outputFile, cons
         throw runtime_error("Ошибка открытия файлов!, Проверьте существует ли входной файл или выставите на него нужные разрешения");
     }
     
+    if (InFile.peek() == InFile.eof()){
+        throw runtime_error("Ошибка! Файл пуст");
+    }
+    
     char ch;
     int index = 0;
     

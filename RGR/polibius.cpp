@@ -63,6 +63,10 @@ void read_file(const string& filename, string& content) {
         throw runtime_error("Ошибка: Не удалось открыть файл для чтения");
     }
     
+    if (file.peek() == file.eof()){
+        throw runtime_error("Ошибка! Файл пуст");
+    }
+    
     file.seekg(0, ios::end);
     size_t size = file.tellg();
     file.seekg(0, ios::beg);
