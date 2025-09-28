@@ -12,10 +12,10 @@ LDFLAGS = -L. -Wl,-rpath,.
 LIBS = -lxor -lpolib -ltritem
 
 # Цель по умолчанию
-all: RGR
+all: ManyCiphers
 
-# Правило для создания исполняемого файла RGR2
-RGR: main.o libpolib.so libtritem.so libxor.so
+# Правило для создания исполняемого файла RGR
+ManyCiphers: main.o libpolib.so libtritem.so libxor.so
 	$(GCC) $(FLAGS) -o $@ main.o $(LDFLAGS) $(LIBS)
 
 # Правила для создания библиотек

@@ -18,13 +18,18 @@ void xor_encrypt_decrypt(const string& inputFile, const string& outputFile, cons
     
     char ch;
     int index = 0;
-    
+    vector<int> test;
     while (InFile.get(ch)){
         char encCh = ch ^ key[index % key.size()];
         index++;
+        test.push_back(ch);
         OutFile.put(static_cast<unsigned char>(encCh));
     }
-
+    for (int h : test){
+        cout << h << ' ';
+    }
+    cout << endl;
+    
     InFile.close();
     OutFile.close();
 }

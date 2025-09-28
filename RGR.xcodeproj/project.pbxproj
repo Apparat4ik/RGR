@@ -23,9 +23,9 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		868A0F882E5B2DE4006E35BA /* RGR */ = {
+		868A0F882E5B2DE4006E35BA /* ManyCiphers */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = RGR;
+			path = ManyCiphers;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -44,7 +44,7 @@
 		868A0F7D2E5B2DE4006E35BA = {
 			isa = PBXGroup;
 			children = (
-				868A0F882E5B2DE4006E35BA /* RGR */,
+				868A0F882E5B2DE4006E35BA /* ManyCiphers */,
 				868A0F872E5B2DE4006E35BA /* Products */,
 			);
 			sourceTree = "<group>";
@@ -73,7 +73,7 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				868A0F882E5B2DE4006E35BA /* RGR */,
+				868A0F882E5B2DE4006E35BA /* ManyCiphers */,
 			);
 			name = RGR;
 			packageProductDependencies = (
